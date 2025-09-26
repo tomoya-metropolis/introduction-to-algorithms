@@ -17,6 +17,18 @@ class Element:
         self.color = color
 
 
+sentinel = None
+
+
+def nil():
+    global sentinel
+
+    if not sentinel:
+        sentinel = Element(-1, color=Color.BLACK)
+
+    return sentinel
+
+
 class Tree:
 
     __slots__ = ['size', 'height', 'root']
