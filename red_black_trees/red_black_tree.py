@@ -60,6 +60,8 @@ class Tree:
             else:
                 y.right = z
 
+        self.__fix_after_insertion(z)
+
         self.height = self.__get_height()
 
     def contains(self, key):
@@ -141,7 +143,6 @@ class Tree:
         y.left = x
         x.parent = y
 
-
     def __rotate_right(self, x):
         y = x.left
 
@@ -159,6 +160,41 @@ class Tree:
 
         y.right = x
         x.parent = y
+
+    def __fix_after_insertion(self, z):
+        while z.parent.color == Color.RED:
+            if z.parent == z.parent.parent.left:
+                y = z.parent.parent.right
+
+                if y.color == Color.RED:
+                    z.parent.color = Color.BLACK
+                    z.parent.parent.color = Color.RED
+                    y.color = Color.BLACK
+                    z = z.parent.parent
+                else:
+                    if z == z.parent.right:
+                        z = z.parent
+                        self.__rotate_left(z)
+                    z.parent.color = Color.BLACK
+                    z.parent.parent.color = Color.RED
+                    self.__rotate_right(z.parent.parent)
+            else:
+                y = z.parent.parent.left
+
+                if y.color == Color.RED:
+                    z.parent.color = Color.BLACK
+                    z.parent.parent.color = Color.RED
+                    y.color = Color.BLACK
+                    z = z.parent.parent
+                else:
+                    if z == z.parent.left:
+                        z = z.parent
+                        self.__rotate_right(z)
+                    z.parent.color = Color.BLACK
+                    z.parent.parent.color = Color.RED
+                    self.__rotate_left(z.parent.parent)
+
+        self.root.color = Color.BLACK
 
     def __transplant(self, p, q):
         if not p.parent:
