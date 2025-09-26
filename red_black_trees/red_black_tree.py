@@ -16,6 +16,9 @@ class Element:
         self.left = self.right = self.parent = None
         self.color = color
 
+    def __str__(self):
+        return f"{self.key}({self.color.value})"
+
 
 sentinel = None
 
