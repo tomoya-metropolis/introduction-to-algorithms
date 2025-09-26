@@ -113,7 +113,7 @@ class Tree:
             if r.left != nil():
                 print_tree_internal(r.left, space_size=space_size+1)
 
-            print('    ' * space_size, r.key)
+            print('    ' * space_size, r)
 
             if r.right != nil():
                 print_tree_internal(r.right, space_size=space_size+1)
