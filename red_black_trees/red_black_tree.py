@@ -51,6 +51,7 @@ class Tree:
             x = x.left if z.key < x.key else x.right
 
         z.parent = y
+        z.left = z.right = nil()
         if y == nil():
             self.root = z
         else:
@@ -152,16 +153,6 @@ class Tree:
 
 if __name__ == '__main__':
     t = Tree()
-
-    t.put(Element(8))
-    t.put(Element(3))
-    t.put(Element(10))
-    t.put(Element(1))
-    t.put(Element(6))
-    t.put(Element(14))
-    t.put(Element(4))
-    t.put(Element(7))
-    t.put(Element(13))
 
     while True:
         print("1:put 2:remove 3:print  4:successor > ", end='')
