@@ -16,25 +16,41 @@ class Element:
         self.left = self.right = self.parent = None
         self.color = color
 
+    def __str__(self):
+        return f"{self.key}({self.color.value})"
+
+
+sentinel = None
+
+
+def nil():
+    global sentinel
+
+    if not sentinel:
+        sentinel = Element(-1)
+
+    return sentinel
+
 
 class Tree:
 
     __slots__ = ['root', 'size', 'height']
 
     def __init__(self):
-        self.root = None
+        self.root = nil()
         self.size = self.height = 0
 
     def put(self, z):
         self.size += 1
 
-        x, y = self.root, None
-        while x:
+        x, y = self.root, nil()
+        while x != nil():
             y = x
             x = x.left if z.key < x.key else x.right
 
         z.parent = y
-        if not y:
+        z.left = z.right = nil()
+        if y == nil():
             self.root = z
         else:
             if z.key < y.key:
@@ -91,17 +107,17 @@ class Tree:
     def print_tree(self):
 
         def print_tree_internal(r, space_size=0):
-            if r.left:
+            if r.left != nil():
                 print_tree_internal(r.left, space_size=space_size+1)
 
-            print('    ' * space_size, r.key)
+            print('    ' * space_size, r)
 
-            if r.right:
+            if r.right != nil():
                 print_tree_internal(r.right, space_size=space_size+1)
 
         print(f"size = {self.size} / height = {self.height}")
 
-        if self.root:
+        if self.root != nil():
             print_tree_internal(self.root)
 
     def __transplant(self, x, y):
@@ -118,7 +134,7 @@ class Tree:
     def __calculate_height(self):
 
         def calculate_height_internal(r):
-            if not r:
+            if r == nil():
                 return -1
 
             height_of_left = calculate_height_internal(r.left)
@@ -126,7 +142,7 @@ class Tree:
 
             return height_of_left + 1 if height_of_left > height_of_right else height_of_right + 1
 
-        if not self.root:
+        if self.root != nil():
             return 0
 
         return calculate_height_internal(self.root)
@@ -134,17 +150,6 @@ class Tree:
 
 if __name__ == '__main__':
     t = Tree()
-
-    # https://en.wikipedia.org/wiki/Binary_search_tree
-    t.put(Element(8))
-    t.put(Element(3))
-    t.put(Element(10))
-    t.put(Element(1))
-    t.put(Element(6))
-    t.put(Element(14))
-    t.put(Element(4))
-    t.put(Element(7))
-    t.put(Element(13))
 
     while True:
         print("1:put 2:remove 3:print 4:successor > ", end='')
@@ -154,7 +159,7 @@ if __name__ == '__main__':
             print("input key > ", end='')
             key = int(input())
 
-            t.put(Element(key))
+            t.put(Element(key, color=Color.RED))
         elif op == 2:
             print("input key > ", end='')
             key = int(input())
