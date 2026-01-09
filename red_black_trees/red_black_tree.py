@@ -120,6 +120,42 @@ class Tree:
         if self.root != nil():
             print_tree_internal(self.root)
 
+    def __rotate_left(self, x):
+        y = x.right
+
+        x.right = y.left
+        if y.left != nil():
+            y.left.parent = x
+
+        y.parent = x.parent
+        if x.parent == nil():
+            self.root = y
+        elif x == x.parent.left:
+            x.parent.left = y
+        else:
+            x.parent.right = y
+
+        y.left = x
+        x.parent = y
+
+    def __rotate_right(self, x):
+        y = x.left
+
+        x.left = y.right
+        if y.right != nil():
+            y.right.parent = x
+
+        y.parent = x.parent
+        if x.parent == nil():
+            self.root = y
+        elif x == x.parent.left:
+            x.parent.left = y
+        else:
+            x.parent.right = y
+
+        y.right = x
+        x.parent = y
+
     def __transplant(self, x, y):
         if not x.parent:
             self.root = y
