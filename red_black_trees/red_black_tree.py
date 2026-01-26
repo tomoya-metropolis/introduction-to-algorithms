@@ -219,7 +219,7 @@ class Tree:
 
             return height_of_left + 1 if height_of_left > height_of_right else height_of_right + 1
 
-        if self.root != nil():
+        if self.root == nil():
             return 0
 
         return calculate_height_internal(self.root)
