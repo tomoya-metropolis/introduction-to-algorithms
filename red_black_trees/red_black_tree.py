@@ -64,21 +64,21 @@ class Tree:
 
     def contains(self, key):
         p = self.root
-        while p and p.key != key:
+        while p != nil() and p.key != key:
             p = p.left if key < p.key else p.right
 
         return p
 
     def successor(self, z):
-        if z.right:
+        if z.right != nil():
             x = z.right
-            while x.left:
+            while x.left != nil():
                 x = x.left
 
             return x
         else:
             x, y = z, z.parent
-            while y and x == y.right:
+            while y != nil() and x == y.right:
                 x = y
                 y = x.parent
 
@@ -87,20 +87,32 @@ class Tree:
     def remove(self, z):
         self.size -= 1
 
-        if not z.left:
+        y = z
+        color_of_y = y.color
+        if z.left == nil():
+            x = z.right
             self.__transplant(z, z.right)
-        elif not z.right:
+        elif z.right == nil():
+            x = z.left
             self.__transplant(z, z.left)
         else:
             y = self.successor(z)
+            color_of_y = y.color
+            x = y.right
             if y.parent != z:
                 self.__transplant(y, y.right)
                 y.right = z.right
                 y.right.parent = y
+            else:
+                x.parent = y
 
             self.__transplant(z, y)
             y.left = z.left
             y.left.parent = y
+            y.color = z.color
+
+        if color_of_y == Color.BLACK:
+            self.__fix_after_deletion(x)
 
         z = None
 
@@ -197,16 +209,72 @@ class Tree:
 
         self.root.color = Color.BLACK
 
+    def __fix_after_deletion(self, x):
+        while x != self.root and x.color == Color.BLACK:
+            if x == x.parent.left:
+                w = x.parent.right
+                if w.color == Color.RED:
+                    # case 1
+                    x.parent.color = Color.RED
+                    w.color = Color.BLACK
+                    self.__rotate_left(x.parent)
+                    w = x.parent.right
+
+                if w.left.color == Color.BLACK and w.right.color == Color.BLACK:
+                    # case 2
+                    w.color = Color.RED
+                    x = x.parent
+                else:
+                    if w.right.color == Color.BLACK:
+                        # case 3
+                        w.left.color = Color.BLACK
+                        w.color = Color.RED
+                        self.__rotate_right(w)
+                        w = x.parent.right
+                    # case 4
+                    w.color = x.parent.color
+                    w.right.color = Color.BLACK
+                    x.parent.color = Color.BLACK
+                    self.__rotate_left(x.parent)
+                    x = self.root
+            else:
+                w = x.parent.left
+                if w.color == Color.RED:
+                    # case 1
+                    x.parent.color = Color.RED
+                    w.color = Color.BLACK
+                    self.__rotate_right(x.parent)
+                    w = x.parent.left
+
+                if w.right.color == Color.BLACK and w.left.color == Color.BLACK:
+                    # case 2
+                    w.color = Color.RED
+                    x = x.parent
+                else:
+                    if w.left.color == Color.BLACK:
+                        # case 3
+                        w.right.color = Color.BLACK
+                        w.color = Color.RED
+                        self.__rotate_left(w)
+                        w = x.parent.left
+                    # case 4
+                    w.color = x.parent.color
+                    w.left.color = Color.BLACK
+                    x.parent.color = Color.BLACK
+                    self.__rotate_right(x.parent)
+                    x = self.root
+
+        x.color = Color.BLACK
+
     def __transplant(self, x, y):
-        if not x.parent:
+        if x.parent == nil():
             self.root = y
         elif x == x.parent.left:
             x.parent.left = y
         else:
             x.parent.right = y
 
-        if y:
-            y.parent = x.parent
+        y.parent = x.parent
 
     def __calculate_height(self):
 
@@ -242,7 +310,7 @@ if __name__ == '__main__':
             key = int(input())
 
             z = t.contains(key)
-            if not z:
+            if z == nil():
                 print(f"{key} is not found in the tree.")
             else:
                 t.remove(z)
@@ -253,11 +321,11 @@ if __name__ == '__main__':
             key = int(input())
 
             z = t.contains(key)
-            if not z:
+            if z == nil():
                 print(f"{key} is not found in the tree.")
             else:
                 succ = t.successor(z)
-                if not succ:
+                if succ == nil():
                     print("successor is none.")
                 else:
                     print(f"successor = {succ.key}")
