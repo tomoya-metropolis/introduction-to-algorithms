@@ -16,6 +16,7 @@ class Vertex:
         self.color = Color.WHITE
         self.distance = 0
         self.predecessor = None
+        self.start = self.finish = 0
 
 
 class Edge:
