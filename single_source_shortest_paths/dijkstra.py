@@ -23,6 +23,8 @@ def dijkstra(graph, s):
             v = vertices[name]
             relax(u, v, weight)
 
+            heapq.heapify(vertex_list)
+
 
 if __name__ == '__main__':
     vertices = {}
